@@ -16,7 +16,7 @@
 #define SM5705_FUELGAUGE_H
 #include <linux/i2c.h>
 //include <linux/mfd/sm5705.h>
-#include "include/sec_charging_common.h"
+#include "../sec_charging_common.h"
 #ifdef CONFIG_DEBUG_FS
 #include <linux/debugfs.h>
 #endif /* #ifdef CONFIG_DEBUG_FS */

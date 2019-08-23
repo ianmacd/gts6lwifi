@@ -21,7 +21,7 @@
 #include <linux/mfd/core.h>
 #include <linux/mfd/sm5705/sm5705.h>
 #include <linux/regulator/machine.h>
-#include "include/sec_charging_common.h"
+#include "../sec_charging_common.h"
 /* CONFIG: Kernel Feature & Target System configuration */
 //#define SM5705_SUPPORT_AICL_CONTROL       - New A series dosen't support, It's MUST be disabled
 #define SM5705_SUPPORT_OTG_CONTROL        //- New A series dosen't support, It's MUST be disabled
