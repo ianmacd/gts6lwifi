@@ -1055,11 +1055,8 @@ static void __init_discard_policy(struct f2fs_sb_info *sbi,
 		dpolicy->min_interval = DEF_MIN_DISCARD_ISSUE_TIME;
 		dpolicy->mid_interval = DEF_MID_DISCARD_ISSUE_TIME;
 		dpolicy->max_interval = DEF_MAX_DISCARD_ISSUE_TIME;
-#ifdef CONFIG_F2FS_CHECK_FS
-		dpolicy->io_aware = true;
-#else
+		// P190708-00895
 		dpolicy->io_aware = false;
-#endif
 		dpolicy->sync = false;
 		dpolicy->ordered = true;
 		if (utilization(sbi) > DEF_DISCARD_URGENT_UTIL) {
@@ -4208,7 +4205,13 @@ static int init_victim_secmap(struct f2fs_sb_info *sbi)
 								GFP_KERNEL);
 	if (!dirty_i->blacklist_victim_secmap)
 		return -ENOMEM;
-
+#if defined(CONFIG_SAMSUNG_USER_TRIAL) || !defined(CONFIG_SAMSUNG_PRODUCT_SHIP)
+	/* W/A for GC failure due to Pinned File */
+	dirty_i->pblacklist_victim_secmap = f2fs_kvzalloc(sbi, bitmap_size,
+								GFP_KERNEL);
+	if (!dirty_i->pblacklist_victim_secmap)
+		return -ENOMEM;
+#endif
 	return 0;
 }
 
@@ -4356,6 +4359,10 @@ static void destroy_victim_secmap(struct f2fs_sb_info *sbi)
 
 	/* W/A for FG_GC failure due to Atomic Write File */    
 	kvfree(dirty_i->blacklist_victim_secmap);
+#if defined(CONFIG_SAMSUNG_USER_TRIAL) || !defined(CONFIG_SAMSUNG_PRODUCT_SHIP)
+	/* W/A for GC failure due to Pinned File */
+	kvfree(dirty_i->pblacklist_victim_secmap);
+#endif
 }
 
 static void destroy_dirty_segmap(struct f2fs_sb_info *sbi)
